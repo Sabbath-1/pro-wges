@@ -1,0 +1,19 @@
+{
+  "name": "project-wges",
+  "version": "1.0.0",
+  "description": "project welfare",
+  "main": "js/index.js",
+  "scripts": {
+    "devStart": "nodemon js/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "ejs": "^3.1.10",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
