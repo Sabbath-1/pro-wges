@@ -11,7 +11,11 @@ router.get('/new', (req, res) => {
 
 router.post('/',(req, res) => {
     console.log(req.body.name)
-    res.send(`Created New User: ${req.body.name}`);
+    const isValid = true;
+    if(isValid){
+        users.push({name: req.body.name})
+    }
+    res.redirect(`/users/${users.length -1}`);
 })
 
 router.route('/:id').get((req, res) => {
