@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    res.send('A user just a user');
+    res.render('index');
 });
 
 router.get('/new', (req, res) => {
