@@ -27,7 +27,7 @@ async function connectDB() {
 
 connectDB();
 
-members.
+members
 
 const userRouter = require('../routes/users')
 app.use("/users", userRouter)
