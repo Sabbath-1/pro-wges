@@ -1,4 +1,97 @@
 GET http://localhost:3000
 
 ###
-GET http://localhost:5173
+GET http://localhost:3000/members/
+
+###
+POST http://localhost:3000/members
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "createdAt": "2024-06-01T12:00:00Z",
+    "circuit": "Circuit A",
+    "phone": "+1234567890",
+    "staffId": "STF12345",
+    "createdBy": "Admin"
+}
+
+###
+POST http://localhost:3000/members
+Content-Type: application/json
+
+{
+    "name": "Kwame Killa",
+    "email": "kk.88@example.com",
+    "createdAt": "2024-06-01T12:00:00Z",
+    "circuit": "Circuit C",
+    "phone": "+383839292",
+    "staffId": "sdF12345",
+    "createdBy": "Admin"
+}
+
+###
+POST http://localhost:3000/members
+Content-Type: application/json
+
+{
+    "name": "mansa musa",
+    "email": "musa4l@example.com",
+    "createdAt": "2024-06-01T12:00:00Z",
+    "circuit": "Circuit B",
+    "phone": "+00244444",
+    "staffId": "don121212",
+    "createdBy": "Admin"
+}
+
+###
+POST http://localhost:3000/members
+Content-Type: application/json
+
+{
+    "name": "bosheba sroka",
+    "email": "bosheba.sroka@example.com",
+    "createdAt": "2024-06-01T12:00:00Z",
+    "circuit": "Circuit D",
+    "phone": "+002044444",
+    "staffId": "don11212",
+    "createdBy": "Admin"
+}
+
+###
+DELETE http://localhost:3000/members/6915dbb8423d2d7144bd1da8
+
+
+###
+GET http://localhost:3000/users/
+
+###
+POST http://localhost:3000/users/
+Content-Type: application/json
+
+{
+    "name": "testuser",
+    "email": "testuser@example.com",
+    "password": "testpassword"
+}
+
+###
+POST http://localhost:3000/users/
+Content-Type: application/json
+
+{
+    "name": "kwaku that be you",
+    "email": "be-like-you-dey-dance@example.com",
+    "password": "shaku..."
+}
+
+###
+POST http://localhost:3000/users/
+Content-Type: application/json
+
+{
+    "name": "cole world",
+    "email": "cole.world@example.com",
+    "password": "legendary"
+}

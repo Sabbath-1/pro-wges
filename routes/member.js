@@ -1,0 +1,65 @@
+const express = require('express');
+const router = express.Router();
+const Member = require('../js/members');
+
+// Route to get all members
+router.get('/', async (req, res) => {
+    try {
+        const members = await Member.find();
+        res.json(members);
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+})
+
+router.get('/:id', getMember, (req, res) => {
+    res.json(res.member);
+});
+
+router.post('/', async (req, res) => {
+    const member = new Member({
+        name: req.body.name,
+        email: req.body.email,
+        createdAt: req.body.createdAt,
+        circuit: req.body.circuit,
+        phone: req.body.phone,
+        staffId: req.body.staffId,
+        createdBy: req.body.createdBy
+    });
+    try {
+        const newMember = await member.save();
+        res.status(201).json(newMember);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+router.patch('/:id', async (req, res) => {});
+
+router.delete('/:id', getMember, async (req, res) => {
+    try {
+        await res.member.deleteOne();
+        res.json({ message: 'Deleted Member' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+
+
+async function getMember(req, res, next) {
+    let member; 
+    try {
+        member = await Member.findById(req.params.id);
+        if (member == null) {
+            return res.status(404).json({ message: 'Cannot find member' });
+        }
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+    res.member = member;
+    next();
+}
+
+module.exports = router;

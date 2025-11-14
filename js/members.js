@@ -110,8 +110,7 @@ const memberSchema = new mongoose.Schema({
   
   // Admin tracking
   createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Admin',
+    type: String,
     required: true
   },
   

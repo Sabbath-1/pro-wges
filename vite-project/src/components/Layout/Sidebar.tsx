@@ -1,4 +1,4 @@
-import React from 'react';
+import GhLogo from '../../assets/Ghana Crest.svg'
 
 const Sidebar: React.FC = () => {
   const menuItems = [
@@ -13,7 +13,7 @@ const Sidebar: React.FC = () => {
   return (
     <div className="w-64 bg-white shadow-lg border-r border-gray-200 h-screen fixed left-0 top-0">
       <div className="p-6">
-        <h1 className="text-xl font-bold text-gray-800">🤝 Welfare Portal</h1>
+        <h1 className="text-xl font-bold text-gray-800"> <img src={GhLogo} alt="Ghana Crest" className="inline-block w-10 h-10 mr-1" /> Welfare Portal</h1>
       </div>
       
       <nav className="mt-6 px-4">
