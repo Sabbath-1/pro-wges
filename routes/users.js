@@ -36,6 +36,14 @@ router.post('/', async (req, res) => {
 }
 })
 
+router.get('/login', (req, res) => {
+    res.render('login');
+});
+
+router.post('/register', async (req, res) => {
+    try {}
+})
+
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -47,7 +55,7 @@ router.post('/login', async (req, res) => {
         if (!isMatch) {
             return res.status(400).send('Invalid email or password');
         }
-        res.send('Login successful');
+        res.render('dashboard', { user });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: err.message });
