@@ -41,7 +41,23 @@ router.get('/login', (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-    try {}
+    try {
+        const { name, email, password } = req.body;
+        if (!name || !email || !password) {
+            return res.status(400).send('All fields are required');
+        }
+        const existingUser = await User.findOne({ $or: [{ email }, { name }] });
+        if (existingUser) {
+            return res.status(400).send('User already exists');
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = new User({ name, email, password: hashedPassword });
+        const savedUser = await newUser.save();
+        res.status(201).json({ message: 'User created successfully', user: { id: savedUser._id, name: savedUser.name, email: savedUser.email } });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+    }
 })
 
 router.post('/login', async (req, res) => {
@@ -49,13 +65,13 @@ router.post('/login', async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email }).select('+password');
         if (!user) {
-            return res.status(400).send('Invalid email or password');
+            return res.status(400).send('User not found');
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).send('Invalid email or password');
         }
-        res.render('dashboard', { user });
+        res.render('index', { user });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: err.message });

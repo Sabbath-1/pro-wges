@@ -1,2 +1,67 @@
 @import "tailwindcss";
 
+:root {
+  --clr-bg-primary: #f9fafb;
+  --clr-bg-secondary: #fff;
+  --clr-bg-accent: #f3f4f6;
+  --clr-txt-primary: #111827;
+  --clr-txt-secondary: #374151;
+  --clr-txt-accent: #6b7280;
+  --clr-txt-inverse: #fff;
+  --clr-border-light: #e5e7eb;
+  --clr-border-medium: #d1d5db;
+  --clr-accent: #2563eb;
+  --clr-accent-hover: #1d4ed9;
+  --clr-accent-light: #dbeafe;
+  --clr-accent-muted: #93c5fd;
+  --clr-overlay: rgba(0, 0, 0, 0.4);
+  --clr-shadow: rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: var(--clr-bg-primary);
+  color: var(--clr-txt-primary);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+@layer base {
+  label {
+    @apply block mb-1 font-medium text-sm;
+    color: var(--clr-txt-secondary);
+  }
+}
+
+/* If you want to keep the form input styles in CSS instead of Tailwind */
+form input[type="email"],
+form input[type="password"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--clr-border-medium);
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  color: var(--clr-txt-primary);
+  background-color: var(--clr-bg-primary);
+  transition: all 0.2s ease-in-out;
+}
+
+form input[type="email"]::placeholder,
+form input[type="password"]::placeholder {
+  color: var(--clr-txt-accent);
+  font-size: 0.875rem;
+}
+
+form input[type="email"]:focus,
+form input[type="password"]:focus {
+  border-color: var(--clr-accent);
+  box-shadow: 0 0 0 3px var(--clr-accent-light);
+  outline: none;
+}
