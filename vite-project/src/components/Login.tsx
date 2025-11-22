@@ -1,6 +1,48 @@
-import GhLogo from '../assets/Ghana Crest.svg'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { login as apiLogin } from '../services/Api';
+import { useAuth } from '../context/AuthContext';
+import GhLogo from '../assets/Ghana Crest.svg';
 
 function Login() {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth(); // Add this line
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const data = await apiLogin(formData);
+      console.log('Login successful:', data);
+      
+      // Update auth context with user data
+      login(data.user);
+      
+      // Navigate to dashboard
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Invalid email or password');
+      console.error('Login error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-50">
       <div className="w-full max-w-md rounded-xl p-8 bg-white mx-auto shadow-lg">
@@ -20,7 +62,13 @@ function Login() {
           Log in to access your dashboard
         </p>
 
-        <form method='POST' action="/login" className="flex flex-col gap-4 text-left">
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-sm">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-left">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
               Email Address
@@ -30,6 +78,8 @@ function Login() {
               id="email" 
               name="email" 
               placeholder="yourmail@example.com" 
+              value={formData.email}
+              onChange={handleChange}
               required 
               className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 text-base transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 focus:outline-none"
             />
@@ -44,6 +94,8 @@ function Login() {
               id="password" 
               name="password" 
               placeholder="••••••••" 
+              value={formData.password}
+              onChange={handleChange}
               required 
               className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 text-base transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 focus:outline-none"
             />
@@ -67,9 +119,10 @@ function Login() {
 
           <button
             type="submit"
-            className="w-full py-3 bg-blue-600 text-white rounded-md border-none text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-blue-700 mb-4"
+            disabled={loading}
+            className="w-full py-3 bg-blue-600 text-white rounded-md border-none text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-blue-700 mb-4 disabled:bg-blue-400 disabled:cursor-not-allowed"
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
@@ -84,7 +137,7 @@ function Login() {
         </footer>
       </div>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;

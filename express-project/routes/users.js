@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const User = require('../js/user');
 const bcrypt = require('bcrypt');
+const passport = require('passport');
 
-router.get('/', async (req, res) => {
+router.get('/', checkAuthenticated, async (req, res) => {
     try {
         const users = await User.find();
         res.json(users);
@@ -16,15 +17,15 @@ router.get('/new', (req, res) => {
     res.render('users/newUser');
 });
 
-router.post('/', async (req, res) => {
+router.post('/',checkNotAuthenticated, async (req, res) => {
    try {
      const {name, email, password} = req.body;
     if (!name || !email || !password) {
-        return res.status(400).send('All fields are required');
+        return res.status(400).json({message: 'All fields are required'});
     }
     const extingUser = await User.findOne({ $or: [{ email }, { name }]  });
     if (extingUser) {
-        return res.status(400).send('User already exists');
+        return res.status(400).json({message: 'User already exists'});
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, email, password: hashedPassword });
@@ -36,19 +37,16 @@ router.post('/', async (req, res) => {
 }
 })
 
-router.get('/login', (req, res) => {
-    res.render('login');
-});
 
-router.post('/register', async (req, res) => {
+router.post('/register',checkNotAuthenticated, async (req, res) => {
     try {
         const { name, email, password } = req.body;
         if (!name || !email || !password) {
-            return res.status(400).send('All fields are required');
+            return res.status(400).json({message: 'All fields are required'});
         }
         const existingUser = await User.findOne({ $or: [{ email }, { name }] });
         if (existingUser) {
-            return res.status(400).send('User already exists');
+            return res.status(400).json({message: 'User already exists'});
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({ name, email, password: hashedPassword });
@@ -60,37 +58,69 @@ router.post('/register', async (req, res) => {
     }
 })
 
-router.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email }).select('+password');
+// UPDATED LOGIN ROUTE - Returns JSON instead of redirecting
+router.post('/login', checkNotAuthenticated, (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            return res.status(500).json({ message: 'Error during authentication', error: err });
+        }
         if (!user) {
-            return res.status(400).send('User not found');
+            return res.status(401).json({ message: info.message || 'Invalid credentials' });
         }
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).send('Invalid email or password');
+        
+        req.logIn(user, (err) => {
+            if (err) {
+                return res.status(500).json({ message: 'Error logging in', error: err });
+            }
+            return res.json({ 
+                message: 'Login successful',
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email
+                }
+            });
+        });
+    })(req, res, next);
+});
+
+// Add logout route
+router.post('/logout', (req, res) => {
+    req.logout((err) => {
+        if (err) {
+            return res.status(500).json({ message: 'Error logging out' });
         }
-        res.render('index', { user });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: err.message });
+        res.json({ message: 'Logged out successfully' });
+    });
+});
+
+// Check authentication status
+router.get('/current', checkAuthenticated, (req, res) => {
+    if (req.isAuthenticated()) {
+        res.json({ 
+            authenticated: true,
+            user: {
+                id: req.user._id,
+                name: req.user.name,
+                email: req.user.email
+            }
+        });
+    } else {
+        res.json({ authenticated: false });
     }
 });
 
-router.route('/:id').get((req, res) => {
-    console.log(req.user)
-    res.send(`Get User ID: ${req.params.id}`);
-}).put((req, res) => {
-    res.send(`Update User ID: ${req.params.id}`);
-}).delete((req, res) => {
-    res.send(`Delete User ID: ${req.params.id}`);
-})
-
-const users = [{name: "Kyle"}, {name: "Walker"}]
-router.param("id", (req, res, next, id) => {
-    req.user = users[id]
-    next()
-})
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.status(401).json({ message: 'Unauthorized' });
+}
+function checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.status(403).json({ message: 'Already authenticated' });
+    }
+    next();
+}
 
 module.exports = router;
