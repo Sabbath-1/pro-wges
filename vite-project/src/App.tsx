@@ -1,5 +1,10 @@
 import Layout from './components/Layout/Layout';
 import Dashboard from './pages/Dashboard';
+import Members from './pages/Members'; 
+import Payments from './pages/Payments';
+import Benefits from './pages/Benefits';
+import Reports from './pages/Reports';
+import Settings from './pages/Settings';
 import Login from './components/Login';
 import Register from './components/Register'; 
 import ProtectedRoute from './components/ProtectedRoute';
@@ -26,17 +31,57 @@ function App() {
     {/* Protected routes - require authentication */}
     <Route path='/dashboard' element={
       <ProtectedRoute>
-        <Layout/>
+        <Layout>
+          <Dashboard/>
+        </Layout>
       </ProtectedRoute>
-    }>
-      <Route index element={<Dashboard/>}/>
-    </Route>
+    }/>
+    
+    <Route path='/members' element={
+      <ProtectedRoute>
+        <Layout>
+          <Members/>
+        </Layout>
+      </ProtectedRoute>
+    }/>
+
+    <Route path='/payments' element={
+      <ProtectedRoute>
+        <Layout>
+          <Payments/>
+        </Layout>
+      </ProtectedRoute>
+    }/>
+
+    <Route path='/benefits' element={
+      <ProtectedRoute>
+        <Layout>
+          <Benefits/>
+        </Layout>
+      </ProtectedRoute>
+    }/>
+
+    <Route path='/reports' element={
+      <ProtectedRoute>
+        <Layout>
+          <Reports/>
+        </Layout>
+      </ProtectedRoute>
+    }/>
+
+    <Route path='/settings' element={
+      <ProtectedRoute>
+        <Layout>
+          <Settings/>
+        </Layout>
+      </ProtectedRoute>
+    }/>
 
     {/* Default redirect to dashboard */}
     <Route path='/' element={<Navigate to="/dashboard" replace />} />
     
-    {/* Catch all - redirect to login */}
-    <Route path='*' element={<Navigate to="/login" replace />} />
+    {/* Catch all - redirect to dashboard */}
+    <Route path='*' element={<Navigate to="/dashboard" replace />} />
    </Routes>
   );
 }
